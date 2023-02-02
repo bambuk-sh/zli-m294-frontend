@@ -9,7 +9,8 @@ function Tasks() {
     const [task, setTask] = useState<Task>();
     const [catfish, setCatfish] = useState<{ id: 0, title: '', completed: false } | Task>({ id: 0, title: '', completed: false });
     const [editMode, setEditMode] = useState<boolean>(false);
-    const [editTask, setEditTask] = useState<Task>();
+    const [editTask, setEditTask] = useState<Task>({ id: 0, title: '', completed: false });
+    const [editText, setEditText] = useState<string>('');
 
     function getTasks() {
         http.get<Task[]>('/tasks').then(response => {
@@ -24,6 +25,8 @@ function Tasks() {
     function getTask(id: number) {
         http.get<Task>('/task/' + id).then(response => {
             setTask(response.data);
+        }).then(() => {
+            getTasks();
         });
     }
 
@@ -34,8 +37,15 @@ function Tasks() {
                 title: response.data.title,
                 completed: completed
             })
+        }).then(() => {
+            getTasks();
         });
-        getTasks();
+    }
+
+    function updateTask(task: Task) {
+        http.put<Task>('/tasks', task).then(() => {
+            getTasks();
+        });
     }
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -45,18 +55,42 @@ function Tasks() {
     function deleteButtonHandler(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) {
         http.delete('/task/' + id).then(() => {
             getTasks();
-        })
-    }
-
-    function getEditTask(id: number) {
-        http.get<Task>('/task/' + id).then(response => {
-            setEditTask(response.data);
         });
     }
 
     function editButtonHandler(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) {
-        getEditTask(id);
-        setEditMode(true);
+        http.get<Task>('/task/' + id).then(response => {
+            setEditTask(response.data);
+        }).then(() => {
+            setEditText(editTask.title);
+        }).then(() => {
+            setEditMode(true);
+        });
+        getTasks();
+    }
+
+    function handleEditTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+        setEditText(event.target.value);
+    }
+
+    function saveButtonHandler(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        setEditMode(false);
+        updateTask({
+            id: editTask.id,
+            title: editText,
+            completed: editTask.completed
+        });
+
+        setEditTask({ id: 0, title: '', completed: false });
+        setEditText('');
+        getTasks();
+    }
+    function discardButtonHandler(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        setEditMode(false);
+
+        setEditTask({ id: 0, title: '', completed: false });
+        setEditText('');
+        getTasks();
     }
 
     function editCat() {
@@ -75,7 +109,14 @@ function Tasks() {
                             <tbody>
                                 <td>{editTask?.id}</td>
                                 <td>
-                                    <textarea value={editTask?.title}></textarea>
+                                    <textarea id='editTextArea'
+                                        defaultValue={editText}
+                                        onChange={(e) => { handleEditTextChange(e); }}
+                                    ></textarea>
+                                </td>
+                                <td>
+                                    <button onClick={(e) => { saveButtonHandler(e); }}>Save</button>
+                                    <button onClick={(e) => { discardButtonHandler(e); }}>Discard</button>
                                 </td>
                             </tbody>
                         </table>

@@ -62,6 +62,7 @@ function Tasks() {
         http.get<Task>('/task/' + id).then(response => {
             setEditTask(response.data);
         }).then(() => {
+            setEditText(' ');
             setEditText(editTask.title);
         }).then(() => {
             setEditMode(true);
@@ -80,16 +81,10 @@ function Tasks() {
             title: editText,
             completed: editTask.completed
         });
-
-        setEditTask({ id: 0, title: '', completed: false });
-        setEditText('');
         getTasks();
     }
     function discardButtonHandler(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         setEditMode(false);
-
-        setEditTask({ id: 0, title: '', completed: false });
-        setEditText('');
         getTasks();
     }
 
@@ -107,10 +102,10 @@ function Tasks() {
                                 <th></th>
                             </thead>
                             <tbody>
-                                <td>{editTask?.id}</td>
+                                <td>{editTask.id}</td>
                                 <td>
                                     <textarea id='editTextArea'
-                                        defaultValue={editText}
+                                        defaultValue={editTask.title}
                                         onChange={(e) => { handleEditTextChange(e); }}
                                     ></textarea>
                                 </td>
@@ -162,7 +157,7 @@ function Tasks() {
                             <td>
                                 <button onClick={(e) => {
                                     deleteButtonHandler(e, item.id);
-                                }}>Cat</button>
+                                }}>Delete</button>
                             </td>
                         </tr>
                     ))}

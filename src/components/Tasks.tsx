@@ -8,6 +8,8 @@ function Tasks() {
     const [taskarr, setTaskarr] = useState<[] | Task[]>([]);
     const [task, setTask] = useState<Task>();
     const [catfish, setCatfish] = useState<{ id: 0, title: '', completed: false } | Task>({ id: 0, title: '', completed: false });
+    const [editMode, setEditMode] = useState<boolean>(false);
+    const [editTask, setEditTask] = useState<Task>();
 
     function getTasks() {
         http.get<Task[]>('/tasks').then(response => {
@@ -46,6 +48,43 @@ function Tasks() {
         })
     }
 
+    function getEditTask(id: number) {
+        http.get<Task>('/task/' + id).then(response => {
+            setEditTask(response.data);
+        });
+    }
+
+    function editButtonHandler(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) {
+        getEditTask(id);
+        setEditMode(true);
+    }
+
+    function editCat() {
+        if (editMode) {
+            return (
+                <div>
+                    <h2>Edit</h2>
+                    <form>
+                        <table>
+                            <thead>
+                                <th>Task ID</th>
+                                <th>Task</th>
+                                <th></th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                <td>{editTask?.id}</td>
+                                <td>
+                                    <textarea value={editTask?.title}></textarea>
+                                </td>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            );
+        }
+    }
+
 
     return (
         <div className='Tasks'>
@@ -55,6 +94,7 @@ function Tasks() {
                         <th>Task ID</th>
                         <th>Task</th>
                         <th>Completed</th>
+                        <th></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -75,6 +115,11 @@ function Tasks() {
                             </td>
                             <td>
                                 <button onClick={(e) => {
+                                    editButtonHandler(e, item.id);
+                                }}>Edit</button>
+                            </td>
+                            <td>
+                                <button onClick={(e) => {
                                     deleteButtonHandler(e, item.id);
                                 }}>Cat</button>
                             </td>
@@ -82,6 +127,7 @@ function Tasks() {
                     ))}
                 </tbody>
             </table>
+            {editCat()}
         </div >
     );
 }

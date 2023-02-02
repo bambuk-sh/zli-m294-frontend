@@ -5,35 +5,38 @@ import React, { useEffect, useState } from "react";
 
 
 function Tasks() {
-    const [taskarr, setTaskarr] = useState([]);
-    const [task, setTask] = useState();
-    const [catfish, setCatfish] = useState();
-    
-    const getTasks = async () => {
-        await http.get('/tasks').then(response => {
+    const [taskarr, setTaskarr] = useState<[] | Task[]>([]);
+    const [task, setTask] = useState<Task>();
+    const [catfish, setCatfish] = useState<{id: 0, title: '', completed: false} | Task>({id: 0, title: '', completed: false});
+
+
+    useEffect(() => {
+        http.get<Task[]>('/tasks').then(response => {
             setTaskarr(response.data);
         });
-    }
 
-    const getTask = async (id: number) => {
-        await http.get('/task/' + id).then(response => {
+    }, []);
+
+    function getTask(id: number) {
+        http.get<Task>('/task/' + id).then(response => {
             setTask(response.data);
         });
     }
 
-    function updateTaskCheck(id: number, completed: boolean){
-        getTask(id);
-        console.log(task);
+    function updateTaskCheck(id: number, completed: boolean) {
+        http.get<Task>('/task/' + id).then(response => {
+            http.put<Task>('/tasks/' + id, {
+                id: response.data.id,
+                title: response.data.title,
+                completed: completed
+            })
+        });
     }
-
-
-    useEffect(() => {
-        getTasks();
-    }, []);
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         updateTaskCheck(1, event.target.checked);
     }
+
 
     return (
         <div className='Tasks'>

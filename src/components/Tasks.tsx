@@ -62,7 +62,6 @@ function Tasks() {
         http.get<Task>('/task/' + id).then(response => {
             setEditTask(response.data);
         }).then(() => {
-            setEditText(' ');
             setEditText(editTask.title);
         }).then(() => {
             setEditMode(true);
@@ -70,11 +69,7 @@ function Tasks() {
         getTasks();
     }
 
-    function handleEditTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-        setEditText(event.target.value);
-    }
-
-    function saveButtonHandler(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    function saveButtonHandler(event: React.FormEvent<HTMLFormElement>) {
         setEditMode(false);
         updateTask({
             id: editTask.id,
@@ -88,31 +83,33 @@ function Tasks() {
         getTasks();
     }
 
+
+
     function editCat() {
         if (editMode) {
             return (
-                <div>
+                <div className="editCat">
                     <h2>Edit</h2>
-                    <form>
+                    <form onSubmit={saveButtonHandler}>
                         <table>
                             <thead>
                                 <th>Task ID</th>
                                 <th>Task</th>
-                                <th></th>
-                                <th></th>
+                                <th>Actions</th>
                             </thead>
                             <tbody>
-                                <td>{editTask.id}</td>
-                                <td>
-                                    <textarea id='editTextArea'
-                                        defaultValue={editTask.title}
-                                        onChange={(e) => { handleEditTextChange(e); }}
-                                    ></textarea>
-                                </td>
-                                <td>
-                                    <button onClick={(e) => { saveButtonHandler(e); }}>Save</button>
-                                    <button onClick={(e) => { discardButtonHandler(e); }}>Discard</button>
-                                </td>
+                                <tr>
+                                    <td>{editTask.id}</td>
+                                    <td>
+                                        <input type='text'
+                                            value={editText}
+                                            onChange={(e) => setEditText(e.target.value)} />
+                                    </td>
+                                    <td>
+                                        <button type='submit'>Save</button>
+                                        <button onClick={(e) => { discardButtonHandler(e); }}>Discard</button>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </form>
@@ -136,7 +133,7 @@ function Tasks() {
                 </thead>
                 <tbody>
                     {taskarr.map((item: Task) => (
-                        <tr id={'task_id_' + item.id}>
+                        <tr key={item.id} id={'task_id_' + item.id}>
                             <td>{item.id}</td>
                             <td>{item.title}</td>
                             <td>

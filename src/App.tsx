@@ -1,11 +1,12 @@
 import './pico.classless.css'
 import Tasks from './components/Tasks';
+import TaskAdd from './components/task_add';
 
 function App() {
   return (
     <div className="App">
-      <h1>Hashkat</h1>
       <Tasks />
+      <TaskAdd />
     </div>
   );
 }

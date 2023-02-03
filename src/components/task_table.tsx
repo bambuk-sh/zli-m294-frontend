@@ -3,9 +3,11 @@ import http from "../http";
 import React, { useEffect, useState } from 'react';
 import Task_view from "./task_view";
 import { Routes, Route, useParams } from 'react-router-dom'
+import { Store } from "react-notifications-component";
 
 function Task_table() {
     const [taskarr, setTaskarr] = useState<[] | Task[]>([]);
+    const [deleteTask, setDeleteTask] = useState<Task>({ id: 0, title: '', completed: false });
 
     function getTasks() {
         http.get<Task[]>('/tasks').then((result) => {
@@ -26,10 +28,21 @@ function Task_table() {
 
     function deleteButtonHandler(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) {
         e.preventDefault();
+
         http.delete('/task/' + id).then(() => {
+            Store.addNotification({
+                title: 'Success',
+                message: 'Task with id ' + id + ' deleted',
+                type: 'success',
+                insert: 'top',
+                container: 'top-right',
+                dismiss: {
+                    duration: 2000,
+                    onScreen: true
+                }
+            });
             getTasks();
-        }
-        );
+        });
     }
 
     useEffect(() => {

@@ -23,7 +23,7 @@ function Task_add() {
                 insert: 'top',
                 container: 'top-right',
                 dismiss: {
-                    duration: 3500,
+                    duration: 2000,
                     onScreen: true
                 }
             });

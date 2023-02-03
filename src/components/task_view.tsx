@@ -1,9 +1,11 @@
 import Task from "../types/task_type";
 import http from "../http";
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Store } from "react-notifications-component";
 
 function Task_view() {
+    const navigate = useNavigate();
     const params = useParams();
     const task_id = params.id;
     const [task, setTask] = useState<Task>({ id: 0, title: '', completed: false });
@@ -16,6 +18,25 @@ function Task_view() {
                     title: result.data.title,
                     completed: e.target.checked
                 });
+            });
+    }
+
+    function deleteButtonHandler(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) {
+        e.preventDefault();
+        http.delete<Task>('/task/' + id)
+            .then(() => {
+                Store.addNotification({
+                    title: 'Success',
+                    message: 'Task ' + task.title + ' deleted',
+                    type: 'success',
+                    insert: 'top',
+                    container: 'top-right',
+                    dismiss: {
+                        duration: 2000,
+                        onScreen: true
+                    }
+                });
+                navigate('/');
             });
     }
 
@@ -48,7 +69,7 @@ function Task_view() {
                             />
                         </td>
                         <td><a href={'/taskedit/' + task.id} role='button'>Edit</a></td>
-                        <td><button>Delete</button></td>
+                        <td><button onClick={(e) => { deleteButtonHandler(e, task.id) }}>Delete</button></td>
                     </tr>
                 </tbody>
             </table>

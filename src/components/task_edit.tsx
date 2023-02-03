@@ -1,12 +1,14 @@
 import Task from "../types/task_type";
 import http from "../http";
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function Task_edit() {
+    const navigate = useNavigate();
     const params = useParams();
     const task_id = params.id;
     const [task, setTask] = useState<Task>({ id: 0, title: '', completed: false });
+    const [editText, setEditText] = useState('');
 
     useEffect(() => {
         http.get<Task>('/task/' + task_id).then((result) => {
@@ -14,26 +16,42 @@ function Task_edit() {
         });
     }, []);
 
-    function handleSubmit(e: React.FormEvent<HTMLFormElement>){
-        
+    function handleSubmit() {
+        http.put('/tasks', {
+            id: task.id,
+            title: editText,
+            completed: task.completed
+        }).then(() => {
+            navigate('/');
+        });
     }
 
     return (
         <div className="task_edit">
             <h1>Edit task</h1>
-            <form onSubmit={(e) => {handleSubmit}}>
+            <form>
                 <table>
                     <tbody>
                         <tr>
                             <td colSpan={2}>
-                                <label><strong>Task title</strong>
-                                    <input type='text' placeholder={task.title} id='tasktitle' name='tasktitle'></input>
+                                <label><strong>Edit task: {task.title}</strong>
+                                    <input type='text'
+                                        placeholder='New task name'
+                                        onChange={(e) => { setEditText(e.target.value) }}
+                                        required
+                                    ></input>
                                 </label>
                             </td>
                         </tr>
                         <tr>
-                            <td><button type='submit'>Save</button></td>
-                            <td><button>Discard</button></td>
+                            <td><button type='submit' onClick={(e) => {
+                                e.preventDefault();
+                                handleSubmit();
+                            }}>Save</button></td>
+                            <td><button onClick={(e) => {
+                                e.preventDefault();
+                                navigate('/');
+                            }}>Discard</button></td>
                         </tr>
                     </tbody>
                 </table>

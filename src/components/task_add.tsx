@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import http from "../http";
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 
 
 function Task_add() {
+    const navigate = useNavigate();
     const [taskName, setTaskName] = useState<string>('');
-    
+
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
@@ -13,7 +15,7 @@ function Task_add() {
             title: taskName,
             completed: false
         }).then(() => {
-            window.location.reload();
+            navigate('/');
         })
     }
 
@@ -24,7 +26,7 @@ function Task_add() {
                     <tbody>
                         <tr>
                             <td>
-                                <input type='text' placeholder='Add a Task' onChange={(e) => {
+                                <input type='text' placeholder='Add a Task' required onChange={(e) => {
                                     setTaskName(e.target.value);
                                 }}></input>
                             </td>

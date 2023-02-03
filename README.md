@@ -15,3 +15,7 @@
 
 ## Git Repo
 https://github.com/bambuk-sh/zli-m294-frontend
+
+
+## Git log
+Seperate file named git_log.txt

@@ -23,6 +23,17 @@ function Task_edit() {
             title: editText,
             completed: task.completed
         }).then(() => {
+            Store.addNotification({
+                title: 'Success',
+                message: 'Task edit successful',
+                type: 'success',
+                insert: 'top',
+                container: 'top-right',
+                dismiss: {
+                    duration: 2000,
+                    onScreen: true
+                }
+            });
             navigate('/');
         });
     }
@@ -47,6 +58,19 @@ function Task_edit() {
                         <tr>
                             <td><button type='submit' onClick={(e) => {
                                 e.preventDefault();
+                                if (!editText) {
+                                    Store.addNotification({
+                                        title: 'Error',
+                                        message: 'Cannot set a task name to empty',
+                                        type: 'danger',
+                                        insert: 'top',
+                                        container: 'top-right',
+                                        dismiss: {
+                                            duration: 2000,
+                                            onScreen: true
+                                        }
+                                    });
+                                }
                                 handleSubmit();
                             }}>Save</button></td>
                             <td><button onClick={(e) => {

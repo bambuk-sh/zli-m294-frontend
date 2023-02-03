@@ -4,11 +4,35 @@ import React, { useEffect, useState } from 'react';
 
 function Task_table() {
     const [taskarr, setTaskarr] = useState<[] | Task[]>([]);
+    const [checked, setChecked] = useState<boolean>(false);
 
-    useEffect(() => {
+    function getTasks() {
         http.get<Task[]>('/tasks').then((result) => {
             setTaskarr(result.data);
         });
+    }
+
+    function checkboxHandler(e: React.ChangeEvent<HTMLInputElement>, id: number) {
+        http.get<Task>('/task/' + id)
+            .then((result) => {
+                http.put<Task>('/tasks', {
+                    id: id,
+                    title: result.data.title,
+                    completed: e.target.checked
+                });
+            });
+    }
+
+    function deleteButtonHandler(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: number) {
+        e.preventDefault();
+        http.delete('/task/' + id).then(() => {
+            getTasks();
+        }
+        );
+    }
+
+    useEffect(() => {
+        getTasks();
     }, []);
 
     return (
@@ -28,11 +52,14 @@ function Task_table() {
                             <td>{item.id}</td>
                             <td>{item.title}</td>
                             <td>
-                                <input type='checkbox' defaultChecked={item.completed} />
+                                <input type='checkbox'
+                                    defaultChecked={item.completed}
+                                    onChange={(e) => { checkboxHandler(e, item.id) }}
+                                />
                             </td>
                             <td><button>View</button></td>
                             <td><button>Edit</button></td>
-                            <td><button>Delete</button></td>
+                            <td><button onClick={(e) => { deleteButtonHandler(e, item.id) }}>Delete</button></td>
                         </tr>
                     ))}
                 </tbody>

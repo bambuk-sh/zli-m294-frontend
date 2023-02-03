@@ -1,13 +1,11 @@
-import Task from "../types/task_type";
 import { useState } from 'react';
 import http from "../http";
-import Tasks from "./Tasks";
+import React from "react";
 
 
 function Task_add() {
-    const [task, setTask] = useState<Task>({ id: 0, title: '', completed: false });
     const [taskName, setTaskName] = useState<string>('');
-
+    
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 

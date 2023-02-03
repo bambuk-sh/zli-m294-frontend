@@ -1,13 +1,13 @@
 import './pico.classless.css'
-import Tasks from './components/Tasks';
-import TaskAdd from './components/task_add';
 import Task_table from './components/task_table';
+import React from 'react';
+import Task_add from './components/task_add';
 
 function App() {
   return (
     <div className="App">
       <Task_table />
-      <TaskAdd />
+      <Task_add />
     </div>
   );
 }

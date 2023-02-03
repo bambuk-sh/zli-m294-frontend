@@ -26,9 +26,12 @@ function Task_add() {
                     <tbody>
                         <tr>
                             <td>
-                                <input type='text' placeholder='Add a Task' required onChange={(e) => {
-                                    setTaskName(e.target.value);
-                                }}></input>
+                                <label>
+                                    <strong>Task Title:</strong>
+                                    <input type='text' placeholder='Add a Task' required onChange={(e) => {
+                                        setTaskName(e.target.value);
+                                    }}></input>
+                                </label>
                             </td>
                             <td>
                                 <button type='submit'>Add</button>

@@ -7,6 +7,8 @@
 ## URLs
 `http://localhost:3001/` To view a table containing all tasks
 
+`/taskadd` To add a task
+
 `/taskview/<id>` To view a single task with the id `<id>`
 
 `/taskedit/<id>` To edit a single task with the id `<id>`

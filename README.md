@@ -1,8 +1,5 @@
-# React Application
+# Bambuk-AG React Application
 
-### `npm start`
+`yarn start` in the backend folder to start the backend. It will run on `http://localhost:3000`.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.
+`npm start` in the frontend folder to start the frontend. It will show which port it will run as on startup, usually `http://localhost/3001`

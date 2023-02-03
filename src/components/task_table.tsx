@@ -1,10 +1,11 @@
 import Task from "../types/task_type";
 import http from "../http";
 import React, { useEffect, useState } from 'react';
+import Task_view from "./task_view";
+import { Routes, Route, useParams } from 'react-router-dom'
 
 function Task_table() {
     const [taskarr, setTaskarr] = useState<[] | Task[]>([]);
-    const [checked, setChecked] = useState<boolean>(false);
 
     function getTasks() {
         http.get<Task[]>('/tasks').then((result) => {
@@ -37,6 +38,7 @@ function Task_table() {
 
     return (
         <div className="task_table">
+            <h1>List of all tasks</h1>
             <table>
                 <thead>
                     <tr>
@@ -57,8 +59,8 @@ function Task_table() {
                                     onChange={(e) => { checkboxHandler(e, item.id) }}
                                 />
                             </td>
-                            <td><button>View</button></td>
-                            <td><button>Edit</button></td>
+                            <td><a href={'/taskview/' + item.id} role='button'>View</a></td>
+                            <td><a href={'/taskedit/' + item.id} role='button'>Edit</a></td>
                             <td><button onClick={(e) => { deleteButtonHandler(e, item.id) }}>Delete</button></td>
                         </tr>
                     ))}
